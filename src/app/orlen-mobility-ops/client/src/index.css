@@ -1,0 +1,110 @@
+@import '@databricks/appkit-ui/styles.css';
+
+/* One red accent and one pale red surface, matched to the selected Network card. */
+:root {
+  --radius: 0.75rem;
+  --orlen-red: #d1181d;
+  --orlen-red-soft: #fde5e3;
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #d1181d;
+  --primary-foreground: #ffffff;
+  --secondary: #fde5e3;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #fde5e3;
+  --accent-foreground: #d1181d;
+  --destructive: #d1181d;
+  --destructive-foreground: #ffffff;
+  --success: #07866f;
+  --success-foreground: #ffffff;
+  --warning: #b86908;
+  --warning-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #cbd5e1;
+  --ring: #d1181d;
+  --chart-1: #d1181d;
+  --chart-2: #07866f;
+  --chart-3: #b86908;
+  --chart-4: #3867e8;
+  --chart-5: #475569;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #15202b;
+  --sidebar-primary: #d1181d;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #fde5e3;
+  --sidebar-accent-foreground: #d1181d;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #d1181d;
+}
+
+@theme inline {
+  --color-orlen-red: var(--orlen-red);
+  --color-orlen-red-soft: var(--orlen-red-soft);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background: var(--background);
+}
+
+body {
+  margin: 0;
+  font-feature-settings:
+    'ss01' 1,
+    'cv11' 1;
+  background: var(--background);
+}
+
+.app-shell {
+  background: var(--background);
+}
+
+.app-header {
+  background: #ffffff;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06);
+}
+
+.header-title {
+  color: var(--orlen-red);
+}
+
+.header-status {
+  border: 1px solid var(--orlen-red);
+  background: var(--orlen-red-soft);
+}
+
+.brand-orb {
+  background: var(--orlen-red);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.nav-active {
+  background: var(--orlen-red);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.hero-title {
+  color: var(--orlen-red);
+}
+
+.accent-card {
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.12);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--orlen-red-soft);
+  color: var(--orlen-red);
+}

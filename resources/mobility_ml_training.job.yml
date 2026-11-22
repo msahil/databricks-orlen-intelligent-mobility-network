@@ -1,0 +1,36 @@
+resources:
+  jobs:
+    mobility_ml_training:
+      name: ${bundle.name}_ml_training
+      description: Train, register, and batch-score the ORLEN Mobility charger failure model
+      max_concurrent_runs: 1
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: ${var.schema}
+        - name: model_name
+          default: ${var.catalog}.${var.schema}.mobility_charger_failure_model
+        - name: experiment_path
+          default: ${var.mlflow_experiment_path}
+      environments:
+        - environment_key: serverless_ml
+          spec:
+            environment_version: "4"
+            dependencies:
+              - mlflow
+              - scikit-learn
+      tasks:
+        - task_key: train_and_score_charger_failure
+          environment_key: serverless_ml
+          spark_python_task:
+            python_file: ../src/notebooks/train_mobility_charger_failure.py
+            parameters:
+              - --catalog
+              - "{{job.parameters.catalog}}"
+              - --schema
+              - "{{job.parameters.schema}}"
+              - --model-name
+              - "{{job.parameters.model_name}}"
+              - --experiment-path
+              - "{{job.parameters.experiment_path}}"

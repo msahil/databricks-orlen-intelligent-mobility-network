@@ -1,0 +1,43 @@
+readiness:
+  status: BLOCKED
+  reason: Design complete; Databricks assets, target workspace, identities, lifecycle, and rehearsal remain unapproved or unimplemented
+
+assertions:
+  alignment:
+    - ALIGNMENT-REVIEW.md contains passing storyline-to-presentation and presentation-to-demo reviews with no unresolved blocker.
+    - Presentation, demo, product map, and facilitator runbook timings and promises remain synchronized after every material change.
+  data:
+    - Synthetic data covers stations, facilities, energy products, chargers, sessions, POS, inventory, traffic, weather, loyalty-safe journey context, and outcomes.
+    - SITE-00015 is the only synthetic_scenario_location, remains within the 80-site network, and is about 7 km straight-line from the Elmshorn map reference.
+    - Bronze, Gold, the site-performance Metric View, and the App display SITE-00015 as ORLEN Charge Elmshorn East; provenance and route-verification fields still identify scenario data.
+    - The governed site-performance Metric View shows SITE-00015 in Germany with one modelled charger ready, at least 300 kW power in its Silver profile, expected wait under 12 minutes, and no claim of a verified real station or drive route.
+  pipeline:
+    - Live events visibly update governed state with measured freshness and lag.
+    - Late or duplicate events have a tested deterministic outcome.
+  governance:
+    - Presenter can read required assets and cannot perform the selected restricted action without approval.
+    - Bundle source contains no hardcoded workspace host, workspace root, catalog, schema, deployment profile, token, or secret.
+    - Catalog, schema, workspace host, workspace root, and explicit CLI profile are supplied and verified at deployment time.
+    - The bundle deploys into `/Workspace/Users/mohammad.sahil@databricks.com/orlen-consumers-products-intelligence`.
+    - CLI preflight and fallback procedures are documented in CLI-FLOW.md.
+    - DATA-DICTIONARY.md documents every implemented table and column.
+  metrics:
+    - Customer and ORLEN KPI definitions are consistent across dashboard, Genie, agent, and outcome calculations.
+  dashboard:
+    - Every query passes and the golden-path filters are rehearsed.
+  genie:
+    - Four demo questions return validated results within expected ranges.
+  ml:
+    - Predictions show feature lineage, model version, confidence, baseline comparison, and business metric.
+  unity_gateway:
+    - Approved access and a denied or approval-required boundary are demonstrated, or the documented fallback is used.
+  agent:
+    - Tool selection, evidence, trace, latency, evaluation, and safe fallback are verified.
+  app:
+    - Human identity, recommendation evidence, adjustment, and approval are visible.
+  lakebase:
+    - Dedicated workshop branch stores run-scoped operational state and returns outcomes to the lakehouse.
+  reset:
+    - Golden path can be restored without rebuilding shared assets.
+  cleanup:
+    - Every deployed resource has an owner, expiry, exact cleanup operation, and verification step.

@@ -1,0 +1,211 @@
+{
+  "version": 2,
+  "config": {
+    "sample_questions": [
+      {
+        "id": "10000000000000000000000000000001",
+        "question": [
+          "Which ORLEN destinations are currently at risk?"
+        ]
+      },
+      {
+        "id": "10000000000000000000000000000002",
+        "question": [
+          "Why is SITE-00007 degraded?"
+        ]
+      },
+      {
+        "id": "10000000000000000000000000000003",
+        "question": [
+          "Which chargers have historical high-score records?"
+        ]
+      },
+      {
+        "id": "10000000000000000000000000000004",
+        "question": [
+          "Which energy types drive the most revenue and margin?"
+        ]
+      },
+      {
+        "id": "10000000000000000000000000000005",
+        "question": [
+          "How are customer journeys performing by segment?"
+        ]
+      }
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_charger_risk"
+      },
+      {
+        "identifier": "msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_customer_journey_value"
+      },
+      {
+        "identifier": "msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_energy_retail_performance"
+      },
+      {
+        "identifier": "msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_site_performance"
+      }
+    ]
+  },
+  "instructions": {
+    "text_instructions": [
+      {
+        "id": "30000000000000000000000000000001",
+        "content": [
+          "## PURPOSE\n",
+          "- Answer ORLEN Mobility questions about destination health, charger risk, multi-energy retail value, and customer journeys for retail and mobility leaders.\n",
+          "- Use the governed Metric Views as the source of truth for all KPIs.\n",
+          "\n",
+          "## DISAMBIGUATION\n",
+          "- Treat destination, site, location, and hub as synonyms for Site.\n",
+          "- Treat fuel type and energy type as synonyms for Energy Type.\n",
+          "- Treat customer experience as wait time, completion rate, affected journeys, or Stop Cafe conversion; ask for clarification when the user means a different measure.\n",
+          "\n",
+          "## DATA QUALITY NOTES\n",
+          "- SITE-00007 is the deterministic hero destination and is intentionally degraded in the workshop baseline.\n",
+          "- `Average Failure Probability` is a legacy measure name for an observed-degradation classification score from 0 to 1. It does not forecast a failure in the next 60 minutes. `High Risk Predictions` counts historical high-band score records, not unique chargers.\n",
+          "\n",
+          "- `At Risk Sites` counts destinations. If asked how many chargers are at risk now, do not use either `At Risk Sites` or `High Risk Predictions` as a distinct latest-charger count; explain that a latest-per-charger source is required.\n",
+          "- All operational values are synthetic historical replay data. State the period and do not describe them as live ORLEN operations or a validated future-failure forecast.\n",
+          "\n",
+          "## CONSTRAINTS\n",
+          "- Do not invent operational actions, financial facts, or customer satisfaction results that are not present in the governed sources.\n",
+          "- State when a question requires an operational action, Lakebase state, or outcome table that is not yet connected.\n",
+          "\n",
+          "## Instructions you must follow when providing summaries\n",
+          "- Name the Metric View and dimensions used for the answer.\n",
+          "- Include the relevant Site, Energy Type, Customer Segment, or time context.\n",
+          "- Distinguish revenue from margin proxy, observed-degradation classification from future failure, and high-score records from distinct chargers.\n",
+          "- Round monetary values to two decimals, probabilities to four decimals, and rates to two percentage points."
+        ]
+      }
+    ],
+    "example_question_sqls": [
+      {
+        "id": "20000000000000000000000000000001",
+        "question": [
+          "Show wait and operating risk for SITE-00007."
+        ],
+        "sql": [
+          "SELECT site_performance.Site, MEASURE(site_performance.`Expected Wait Minutes`) AS expected_wait_minutes, MEASURE(site_performance.`At Risk Sites`) AS at_risk_sites FROM msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_site_performance AS site_performance WHERE site_performance.Site = 'SITE-00007' GROUP BY ALL"
+        ]
+      },
+      {
+        "id": "20000000000000000000000000000002",
+        "question": [
+          "Show charger risk for SITE-00007."
+        ],
+        "sql": [
+          "SELECT charger_risk.Site, MEASURE(charger_risk.`Average Failure Probability`) AS average_failure_probability, MEASURE(charger_risk.`High Risk Predictions`) AS high_risk_predictions FROM msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_charger_risk AS charger_risk WHERE charger_risk.Site = 'SITE-00007' GROUP BY ALL"
+        ]
+      },
+      {
+        "id": "20000000000000000000000000000003",
+        "question": [
+          "Compare revenue and margin by energy type."
+        ],
+        "sql": [
+          "SELECT energy_retail.`Energy Type`, MEASURE(energy_retail.`Total Revenue EUR`) AS total_revenue_eur, MEASURE(energy_retail.`Margin Proxy EUR`) AS margin_proxy_eur FROM msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_energy_retail_performance AS energy_retail GROUP BY ALL"
+        ]
+      },
+      {
+        "id": "20000000000000000000000000000004",
+        "question": [
+          "Compare completed journeys and completion rate by customer segment."
+        ],
+        "sql": [
+          "SELECT journey_value.`Customer Segment`, MEASURE(journey_value.`Completed Journeys`) AS completed_journeys, MEASURE(journey_value.`Journey Completion Rate`) AS completion_rate FROM msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_customer_journey_value AS journey_value GROUP BY ALL"
+        ]
+      }
+    ]
+  },
+  "benchmarks": {
+    "questions": [
+      {
+        "id": "40000000000000000000000000000005",
+        "question": [
+          "Why is the hero destination at risk and what should ORLEN investigate?"
+        ],
+        "answer": [
+          {
+            "format": "SQL"
+          }
+        ],
+        "evaluation_note": [
+          "Agent-mode question: synthesize the site performance and charger-risk Metric Views, cite both governed sources, explain the customer and ORLEN value at risk, and clearly label any recommended action as a proposal requiring human approval."
+        ]
+      },
+      {
+        "id": "40000000000000000000000000000004",
+        "question": [
+          "How do customer journeys perform across family, fleet, truck, and long-distance segments?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT journey_value.`Customer Segment`, MEASURE(journey_value.`Completed Journeys`) AS completed_journeys, MEASURE(journey_value.`Journey Completion Rate`) AS completion_rate, MEASURE(journey_value.`Journey Margin Proxy EUR`) AS margin_proxy_eur FROM msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_customer_journey_value AS journey_value GROUP BY ALL"
+            ]
+          }
+        ],
+        "evaluation_note": [
+          "Must compare all four customer segments using completed journeys, completion rate, and margin proxy."
+        ]
+      },
+      {
+        "id": "40000000000000000000000000000003",
+        "question": [
+          "Which energy types contribute the most revenue and margin proxy?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT energy_retail.`Energy Type`, MEASURE(energy_retail.`Total Revenue EUR`) AS total_revenue_eur, MEASURE(energy_retail.`Margin Proxy EUR`) AS margin_proxy_eur FROM msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_energy_retail_performance AS energy_retail GROUP BY ALL"
+            ]
+          }
+        ],
+        "evaluation_note": [
+          "Must include EV, petrol, diesel, LPG, hydrogen and the separate convenience retail category; distinguish total revenue from margin proxy."
+        ]
+      },
+      {
+        "id": "40000000000000000000000000000002",
+        "question": [
+          "How many historical high-risk charger score records are there for SITE-00007?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT charger_risk.Site, MEASURE(charger_risk.`Average Failure Probability`) AS average_failure_probability, MEASURE(charger_risk.`High Risk Predictions`) AS high_risk_predictions FROM msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_charger_risk AS charger_risk WHERE charger_risk.Site = 'SITE-00007' GROUP BY ALL"
+            ]
+          }
+        ],
+        "evaluation_note": [
+          "Must report 24 high-risk score records for SITE-00007, distinguish records from distinct latest-scored chargers, and avoid claiming future failure."
+        ]
+      },
+      {
+        "id": "40000000000000000000000000000001",
+        "question": [
+          "What is the expected wait and risk at SITE-00007?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT site_performance.Site, MEASURE(site_performance.`Expected Wait Minutes`) AS expected_wait_minutes, MEASURE(site_performance.`At Risk Sites`) AS at_risk_sites FROM msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_mv_site_performance AS site_performance WHERE site_performance.Site = 'SITE-00007' GROUP BY ALL"
+            ]
+          }
+        ],
+        "evaluation_note": [
+          "Must identify SITE-00007 as degraded, report approximately 16.76 expected wait minutes, and report one at-risk site."
+        ]
+      }
+    ]
+  }
+}

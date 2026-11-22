@@ -1,0 +1,408 @@
+{
+  "workshop_key": "ws_orlen_intelligent_mobility",
+  "workspace_parent_folder": "/Workspace/Users/mohammad.sahil@databricks.com",
+  "workspace_project_name": "orlen-consumers-products-intelligence",
+  "workspace_project_folder": "/Workspace/Users/mohammad.sahil@databricks.com/orlen-consumers-products-intelligence",
+  "workspace_path_pattern": "<workspace_parent_folder>/<workspace_project_name>",
+  "owner": null,
+  "expires_on": null,
+  "pages": [
+    {
+      "key": "orlen-mobility-network-control-tower",
+      "display_name": "Network Control Tower",
+      "status": "created-by-genie-code",
+      "subdomains": [
+        "ORLEN Mobility / Destinations"
+      ],
+      "business_question": "Which ORLEN destinations can serve this journey?",
+      "primary_assets": [
+        "ORLEN Mobility Control Tower",
+        "mobility_mv_site_performance"
+      ],
+      "workspace_page_id": null,
+      "verification": "Page reported as created through Genie Code; the Domains API exposes root/subdomain metadata but no Page identifier field. Verify the Page in the Genie/Ontology UI and add its identifier when exposed."
+    },
+    {
+      "key": "orlen-mobility-site-risk-and-demand",
+      "display_name": "Site Risk and Demand",
+      "status": "created-by-genie-code",
+      "subdomains": [
+        "ORLEN Mobility / Customer Journeys",
+        "ORLEN Mobility / Operations Response"
+      ],
+      "business_question": "What is changing at the selected hub and why?",
+      "primary_assets": [
+        "mobility_mv_customer_journey_value",
+        "mobility_mv_charger_risk"
+      ],
+      "workspace_page_id": null,
+      "verification": "Page reported as created through Genie Code; identifier not returned by the Domains API."
+    },
+    {
+      "key": "orlen-mobility-response-decision",
+      "display_name": "Response Decision",
+      "status": "created-by-genie-code",
+      "subdomains": [
+        "ORLEN Mobility / Operations Response"
+      ],
+      "business_question": "What bounded response should operations approve?",
+      "primary_assets": [
+        "mobility_mv_charger_risk",
+        "mobility_ml_charger_failure_predictions"
+      ],
+      "workspace_page_id": null,
+      "verification": "Page reported as created through Genie Code; identifier not returned by the Domains API."
+    },
+    {
+      "key": "orlen-mobility-outcome-scorecard",
+      "display_name": "Outcome Scorecard",
+      "status": "created-by-genie-code",
+      "subdomains": [
+        "ORLEN Mobility / Closed-Loop Outcomes"
+      ],
+      "business_question": "Did the response improve the journey and ORLEN economics?",
+      "primary_assets": [
+        "mobility_mv_customer_journey_value",
+        "mobility_mv_energy_retail_performance"
+      ],
+      "workspace_page_id": null,
+      "verification": "Page reported as created through Genie Code; identifier not returned by the Domains API."
+    }
+  ],
+  "resources": [
+    {
+      "key": "orlen-mobility-domain-hierarchy",
+      "kind": "beta-domains-and-subdomains",
+      "status": "deployed-and-verified",
+      "root_domain_id": "bbd2f516-276f-4754-8082-de884337b18f",
+      "subdomain_ids": {
+        "Destinations": "b387ca37-710d-42d5-9796-3c899ec44e71",
+        "Customer Journeys": "32d6d260-01d0-4e91-8fe0-06b717cd01b9",
+        "Energy and Convenience Retail": "24b7250c-e45e-4e6d-b9ca-771884aa9d8c",
+        "Demand and Travel Context": "357383c8-2218-4901-a167-c3319de127f9",
+        "Operations Response": "93798422-fb87-4c51-a427-17d28b15bdaf",
+        "Closed-Loop Outcomes": "baa07c0c-161b-4f72-ac59-2bd1ae39e9cf"
+      },
+      "tagged_uc_asset_count": 33,
+      "root_domain": "ORLEN Mobility",
+      "subdomains": [
+        "Destinations",
+        "Customer Journeys",
+        "Energy and Convenience Retail",
+        "Demand and Travel Context",
+        "Operations Response",
+        "Closed-Loop Outcomes"
+      ],
+      "create": "Create the root with the documented POST /api/2.0/domains?domain_id=orlen-mobility-root request (or the equivalent domains create-domain command), then create each subdomain with parent_domain_id.",
+      "verify": "List domains and record returned resource IDs; verify the root/subdomain hierarchy and governed tag key.",
+      "reset": "No reset operation; update or delete only these workshop domains after explicit cleanup approval.",
+      "cleanup": "Delete only the ORLEN Mobility root and its subdomains after all assigned assets are removed and explicit cleanup is approved.",
+      "blocking_reason": null,
+      "creation_notebook": "/Workspace/Users/mohammad.sahil@databricks.com/orlen-consumers-products-intelligence/Create ORLEN Mobility Domains",
+      "creation_notebook_object_id": "1499790499754453"
+    },
+    {
+      "key": "mobility-synthetic-source-data",
+      "kind": "bundle-managed-source-job",
+      "status": "deployed-and-verified",
+      "workspace_job_id": "510590869224243",
+      "last_successful_run_id": "432046535942362",
+      "source": "src/notebooks/generate_mobility_synthetic_data.py",
+      "domain": "ORLEN Mobility / Destinations",
+      "outputs": [
+        "mobility_bronze_sites",
+        "mobility_bronze_site_facilities",
+        "mobility_bronze_chargers",
+        "mobility_bronze_station_events",
+        "mobility_bronze_charger_telemetry",
+        "mobility_bronze_charging_sessions",
+        "mobility_bronze_fuel_transactions",
+        "mobility_bronze_convenience_transactions",
+        "mobility_bronze_inventory_snapshots",
+        "mobility_bronze_traffic_demand",
+        "mobility_bronze_weather_observations",
+        "mobility_bronze_customer_journeys",
+        "mobility_bronze_maintenance_history",
+        "mobility_bronze_vitay_interactions",
+        "mobility_bronze_holiday_calendar"
+      ],
+      "create": "Deploy and run the bundle-managed source-data job with catalog, schema, run_id, and event-count parameters.",
+      "verify": "Verify row counts, all four fuel types (petrol, diesel, LPG, hydrogen), hero-scenario records, referential integrity, event-time/ingestion-time ordering, and every descriptive source schema against DATA-DICTIONARY.md.",
+      "reset": "Rerun with mode=overwrite and the deterministic baseline run_id.",
+      "cleanup": "Drop only the workshop-prefixed tables after explicit cleanup approval.",
+      "validation_2026_11_20": {
+        "sites": 80,
+        "charger_assets": 591,
+        "elmshorn_installed_chargers": 10,
+        "elmshorn_telemetry_chargers": 10,
+        "elmshorn_fuel_sales": {
+          "petrol": 223,
+          "diesel": 111,
+          "lpg": 112
+        },
+        "orphan_telemetry": 0
+      }
+    },
+    {
+      "key": "mobility-lakeflow-silver-gold",
+      "kind": "bundle-managed-lakeflow-pipeline",
+      "status": "deployed-and-verified",
+      "workspace_pipeline_id": "47adaba4-87e4-4148-b924-77a50dbd93fe",
+      "last_successful_update_id": "e24ddc53-b758-48b1-b4e9-6ae38797926f",
+      "elmshorn_nearby_scenario": {
+        "site_id": "SITE-00015",
+        "display_name": "ORLEN Charge Elmshorn East",
+        "location_data_status": "synthetic_scenario_location",
+        "straight_line_distance_km": 7,
+        "real_station_verified": false,
+        "drive_route_verified": false,
+        "current_capacity_verified": false,
+        "bronze_patch": "src/sql/seed_elmshorn_nearby_scenario.sql"
+      },
+      "source": "src/pipelines/mobility_lakeflow/transformations/mobility_pipeline.py",
+      "domain": "ORLEN Mobility / Operations Response",
+      "outputs": [
+        "mobility_silver_station_events",
+        "mobility_silver_sites_and_facilities",
+        "mobility_silver_charging_operations",
+        "mobility_silver_energy_transactions",
+        "mobility_silver_convenience_and_inventory",
+        "mobility_silver_demand_context",
+        "mobility_silver_customer_journeys",
+        "mobility_silver_maintenance",
+        "mobility_gold_site_operating_state",
+        "mobility_gold_customer_journey_metrics",
+        "mobility_gold_energy_and_retail_performance",
+        "mobility_gold_network_capacity_and_demand"
+      ],
+      "create": "Deploy and run the mobility_lakeflow bundle pipeline after the descriptive Bronze source job succeeds.",
+      "verify": "Verify Silver row count, duplicate elimination, quality expectations, Gold row counts, and the SITE-00007 degraded hero state.",
+      "reset": "Rerun the deterministic Bronze source job with overwrite mode, then refresh the Lakeflow pipeline.",
+      "cleanup": "Remove only the workshop-prefixed pipeline outputs and pipeline after explicit cleanup approval.",
+      "validation_2026_11_20": {
+        "elmshorn_ready_chargers": 9,
+        "elmshorn_status": "degraded",
+        "elmshorn_expected_wait_minutes": 16.76,
+        "elmshorn_gold_energy_eur": 34342,
+        "elmshorn_gold_convenience_eur": 17201,
+        "elmshorn_gold_total_eur": 51543,
+        "pos_reconciliation": "exact"
+      }
+    },
+    {
+      "key": "mobility-charger-failure-ml",
+      "kind": "bundle-managed-ml-training-job",
+      "status": "deployed-and-verified",
+      "workspace_job_id": "632904513951750",
+      "last_successful_run_id": "1037560597484250",
+      "model_name": "msahil_demo_workspace_catalog.orlen_intelligent_mobility.mobility_charger_failure_model",
+      "model_version": "3",
+      "model_alias": "prod",
+      "source": "src/notebooks/train_mobility_charger_failure.py",
+      "domain": "ORLEN Mobility / Operations Response",
+      "outputs": [
+        "mobility_ml_charger_failure_features",
+        "mobility_ml_charger_failure_predictions"
+      ],
+      "create": "Deploy and run the ML training job with the deployment-time catalog, schema, model name, and MLflow experiment path.",
+      "verify": "Verify MLflow validation accuracy, registered UC model version and prod alias, feature row count, unique prediction IDs, baseline comparison, and high-risk SITE-00007 scores.",
+      "reset": "Rerun the deterministic Lakeflow and ML jobs; the feature and prediction tables are overwritten for the baseline replay.",
+      "cleanup": "Drop only the workshop-prefixed ML tables and archive/delete the registered model and experiment only after explicit cleanup approval.",
+      "score_semantics": "Observed-degradation classification; future horizon 0; historical replay",
+      "validation_2026_11_20": {
+        "feature_rows": 35714,
+        "prediction_rows": 35714,
+        "elmshorn_score_records": 447,
+        "elmshorn_scored_chargers": 10,
+        "elmshorn_historical_high_records": 24,
+        "elmshorn_latest_high_chargers": 1,
+        "validation_accuracy": 1.0,
+        "accuracy_caveat": "Synthetic label is derived from same-row status and separable features; not evidence of future-failure prediction"
+      }
+    },
+    {
+      "key": "mobility-governed-metric-views",
+      "kind": "bundle-managed-metric-view-job",
+      "status": "deployed-and-verified",
+      "workspace_job_id": "1051242330112845",
+      "last_successful_run_id": "343768781400509",
+      "source": "src/notebooks/create_mobility_metric_views.py",
+      "domain": "ORLEN Mobility / Destinations",
+      "outputs": [
+        "mobility_mv_site_performance",
+        "mobility_mv_customer_journey_value",
+        "mobility_mv_energy_retail_performance",
+        "mobility_mv_charger_risk"
+      ],
+      "create": "Deploy and run the metric-view job with deployment-time catalog and schema parameters after Gold and ML products exist.",
+      "verify": "Run the benchmark queries in GENIE-ONTOLOGY.md using MEASURE(...) and GROUP BY ALL; verify hero-site wait, at-risk count, charger-risk probability, and multi-energy revenue/margin results.",
+      "reset": "Rerun the job after the deterministic Gold/ML replay; CREATE OR REPLACE preserves the source-controlled metric definitions.",
+      "cleanup": "Drop only the four workshop-prefixed Metric Views after explicit cleanup approval."
+    },
+    {
+      "key": "orlen-mobility-control-tower-dashboard",
+      "kind": "ai-bi-dashboard",
+      "status": "deployed-and-published",
+      "domain": "ORLEN Mobility / Destinations",
+      "display_name": "ORLEN Mobility Control Tower",
+      "workspace_dashboard_id": "01f1df6c02b81a04b88e5141906d65bb",
+      "workspace_object_id": "1499790499754462",
+      "workspace_path": "/Workspace/Users/mohammad.sahil@databricks.com/orlen-consumers-products-intelligence/ORLEN Mobility Control Tower.lvdash.json",
+      "warehouse_id": "3fcc040816112500",
+      "catalog": "msahil_demo_workspace_catalog",
+      "schema": "orlen_intelligent_mobility",
+      "source": "src/dashboards/orlen_mobility_control_tower.lvdash.json",
+      "depends_on": [
+        "mobility-lakeflow-silver-gold",
+        "mobility-charger-failure-ml",
+        "mobility-governed-metric-views"
+      ],
+      "create": "Created and published with the Lakeview CLI from the source-controlled definition after testing every dataset query. Dataset catalog/schema are deployment-time values.",
+      "verify": "Published dashboard has four pages and six dataset queries, all six retested successfully. Hero tiles show 16.76-minute modelled wait, one at-risk destination, and 24 historical high-score records. Elmshorn Gold energy €34,342 plus convenience €17,201 reconciles to €51,543. Labels disclose observed-degradation score and historical replay.",
+      "reset": "Restore the baseline dashboard filters/bookmark and deterministic source run.",
+      "cleanup": "Unpublish/delete only the workshop dashboard after explicit cleanup approval.",
+      "published_revision_time": "2026-11-20T16:10:30.826Z"
+    },
+    {
+      "key": "orlen-mobility-decision-intelligence-genie",
+      "kind": "genie-agent",
+      "status": "deployed-and-verified",
+      "workspace_genie_id": "01f1df7010f21e1da6ac146cddb7d8e6",
+      "display_name": "ORLEN Mobility Decision Intelligence",
+      "workspace_parent_folder": "/Workspace/Users/mohammad.sahil@databricks.com/orlen-consumers-products-intelligence",
+      "domain": "ORLEN Mobility / Customer Journeys",
+      "workspace_tag": {
+        "key": "orlen_mobility_domain",
+        "value": "ORLEN Mobility / Customer Journeys",
+        "verified": true
+      },
+      "warehouse_id": "3fcc040816112500",
+      "catalog": "msahil_demo_workspace_catalog",
+      "schema": "orlen_intelligent_mobility",
+      "source": "integrations/genie/orlen_mobility_genie_agent.json",
+      "sources": [
+        "mobility_mv_site_performance",
+        "mobility_mv_charger_risk",
+        "mobility_mv_energy_retail_performance",
+        "mobility_mv_customer_journey_value"
+      ],
+      "benchmark_results": {
+        "status": "completed",
+        "questions": 5,
+        "hero_site": "SITE-00007",
+        "expected_wait_minutes": 16.76,
+        "at_risk_sites": 1,
+        "high_risk_predictions": 24,
+        "energy_types": [
+          "ev",
+          "petrol",
+          "diesel",
+          "lpg",
+          "hydrogen"
+        ],
+        "customer_segments": [
+          "family",
+          "fleet",
+          "long_distance",
+          "truck"
+        ],
+        "score_record_semantics": "Historical high-score records, not distinct latest-high chargers or a future-failure forecast",
+        "ambiguous_charger_count_test": "Passed: Genie declined to infer distinct current chargers from At Risk Sites or High Risk Predictions measures"
+      },
+      "create": "Created from the source-controlled serialized agent definition with the deployment-time warehouse, catalog, schema, and project folder.",
+      "verify": "Run the five benchmark questions: at-risk destinations, hero-site explanation, charger prioritization, energy revenue/margin, and customer journey performance. Confirm Metric View grounding, expected hero values, and human-approval caveat for proposed actions.",
+      "reset": "No mutable data is written by the Genie Agent; rerun the deterministic source jobs and refresh Metric Views before a new rehearsal.",
+      "cleanup": "Trash only this workshop Genie Agent after explicit cleanup approval.",
+      "last_verified_etag": "1675fb54334c0a7c8bbd09489c4bd0c6cc9f92db9a1791e276371ab6feba39fe"
+    },
+    {
+      "key": "orlen-mobility-operations-unity-gateway-boundary",
+      "kind": "unity-gateway-boundary",
+      "status": "designed-capability-verified",
+      "domain": "ORLEN Mobility / Operations Response",
+      "source": "integrations/unity_gateway/ORLEN-MOBILITY-OPERATIONS-BOUNDARY.md",
+      "enforcement_review": "integrations/unity_gateway/GATEWAY-ENFORCEMENT-REVIEW.md",
+      "workspace_capabilities": {
+        "ai_gateway_cli": true,
+        "model_services": true,
+        "model_provider_services": false,
+        "mcp_services": "system-services-only",
+        "skills_api": true
+      },
+      "planned_tools": [
+        "orlen_mobility_site_status",
+        "orlen_mobility_charger_risk",
+        "orlen_mobility_retail_value",
+        "orlen_mobility_journey_value",
+        "orlen_mobility_propose_response",
+        "orlen_mobility_commit_response"
+      ],
+      "create": "Use the ai-gateway CLI/API after the App/Lakebase action backend and approved MCP connection or skill bundle exist. Do not create a placeholder live service.",
+      "verify": "Demonstrate governed read access, one bounded proposal, one denied direct analytical write, and one denied commit without a human approval ID; capture policy and trace evidence.",
+      "reset": "Delete or expire proposal state in the dedicated Lakebase branch; no analytical tables are mutated by the read/propose boundary.",
+      "cleanup": "Remove only the ORLEN-specific Gateway service, skill, policy, and grants after explicit cleanup approval."
+    },
+    {
+      "key": "orlen-mobility-recommendations-model-service",
+      "kind": "unity-gateway-model-service",
+      "status": "gateway-policy-proven-local-app-integrated-hosted-pending",
+      "domain": "ORLEN Mobility / Operations Response",
+      "domain_tag_key": "ORLEN Mobility/Operations Response",
+      "domain_tag_verified": true,
+      "resource_name": "model-services/msahil_demo_workspace_catalog.orlen_intelligent_mobility.orlen_mobility_recommendations",
+      "backing_model": "models/system.ai.databricks-gpt-5-4-mini",
+      "created_at": "2026-11-21T08:26:22.934Z",
+      "owner": "mohammad.sahil@databricks.com",
+      "source": "integrations/unity_gateway/orlen_mobility_recommendations.model-service.json",
+      "specification": "integrations/unity_gateway/ORLEN-RECOMMENDATION-GATEWAY-SPEC.md",
+      "policy_status": "attached-enforcing-input-allow-deny-proven",
+      "policy_name": "orlen_mobility_safe_recommendation",
+      "policy_evaluator": "system.ai.gpt-5-4-nano",
+      "allowed_response_id": "resp_01b39717b4c335aa016b015a30ae9c81a48f3ba78196e3fd01",
+      "local_app_response_id": "resp_0a94877fe3547678016b01604f8e1881a4beddac8fc9aeb8a5",
+      "denied_policy_action": "deny",
+      "denied_policy_phase": "pre_call",
+      "verify": "Passed 2026-11-21: direct Gateway and local App safe requests completed; unsafe requests returned Gateway content_filter with named pre_call deny and reason. No separate denied trace ID returned. Hosted App parity and observed impact remain open; commit is App-controlled.",
+      "cleanup": "If created, remove only this ORLEN-specific service and its policy after explicit cleanup approval."
+    },
+    {
+      "key": "orlen-mobility-operations-app",
+      "kind": "databricks-app",
+      "status": "hosted-deployed-local-update-pending",
+      "local_gateway_recommendation": "integrated-and-api-proven-2026-11-21",
+      "local_execution_ledger": "implemented-and-live-demo-cycle-verified-2026-11-21; four action audit rows and one case summary; Elmshorn case remains measured for review",
+      "local_outcome_evidence": "read-only action audit panel implemented locally; post-action observations and Gold outcome tables remain absent",
+      "display_name": "ORLEN Mobility Operations",
+      "app_name": "orlen-mobility-ops",
+      "workspace_app_id": "71d32375-1af3-475c-ae56-d7119dbe1f12",
+      "workspace_service_principal_client_id": "71d32375-1af3-475c-ae56-d7119dbe1f12",
+      "deployment_id": "01f1e4b95b43107e850213b59bb38432",
+      "workspace_source_path": "/Workspace/Users/mohammad.sahil@databricks.com/orlen-consumers-products-intelligence/apps/orlen-mobility-ops",
+      "url": "https://orlen-mobility-ops-7474647896699216.aws.databricksapps.com",
+      "domain": "ORLEN Mobility / Operations Response",
+      "source": "src/app/orlen-mobility-ops",
+      "lakebase": {
+        "project": "projects/demo-hub",
+        "branch": "projects/demo-hub/branches/orlen-mobility-ops",
+        "database": "projects/demo-hub/branches/orlen-mobility-ops/databases/databricks-postgres",
+        "schema": "orlen_mobility_ops",
+        "branch_no_expiry": true,
+        "schema_owner": "App service principal 71d32375-1af3-475c-ae56-d7119dbe1f12"
+      },
+      "resources": [
+        "3fcc040816112500",
+        "01f1df7010f21e1da6ac146cddb7d8e6",
+        "projects/demo-hub/branches/orlen-mobility-ops/databases/databricks-postgres"
+      ],
+      "capabilities": [
+        "React + Tailwind business decision view",
+        "visible Databricks capability map",
+        "portable Analytics/Genie/Lakebase structure"
+      ],
+      "create": "Create the App resource, attach the warehouse, Genie Space, and dedicated Lakebase branch/database, grant least-privilege Metric View access, then deploy the staged Workspace source.",
+      "verify": "Verify Apps status RUNNING, deployment SUCCEEDED, nine Analytics query types, Lakebase four-action seed, current-cycle audit, 400/403/409 guards, approved simulated execution, and hosted parity after an accepted deployment.",
+      "reset": "After owner approval, reset only CASE-SITE-00007 in the dedicated Lakebase branch; verify needs_review, four proposed actions, no current-cycle approval, and null scenario impact. Local App UI changes do not require a hosted redeploy until handoff.",
+      "cleanup": "Stop/delete only the workshop App and its permanent ORLEN Lakebase branch after explicit cleanup approval; revoke the App service principal grants."
+    }
+  ]
+}

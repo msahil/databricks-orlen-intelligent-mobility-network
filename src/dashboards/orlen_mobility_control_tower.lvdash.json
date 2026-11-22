@@ -1,0 +1,1506 @@
+{
+  "datasets": [
+    {
+      "name": "site_overview",
+      "displayName": "Destination operating state",
+      "queryLines": [
+        "SELECT Site AS site_id, `Operating Status` AS operating_status, `Hero Trigger Active` AS hero_trigger_active, MEASURE(`Available Chargers`) AS available_chargers, MEASURE(`Expected Wait Minutes`) AS expected_wait_minutes, MEASURE(`At Risk Sites`) AS at_risk_sites FROM mobility_mv_site_performance GROUP BY ALL"
+      ]
+    },
+    {
+      "name": "hero_site",
+      "displayName": "Hero destination",
+      "queryLines": [
+        "SELECT Site AS site_id, `Operating Status` AS operating_status, MEASURE(`Available Chargers`) AS available_chargers, MEASURE(`Expected Wait Minutes`) AS expected_wait_minutes, MEASURE(`At Risk Sites`) AS at_risk_sites FROM mobility_mv_site_performance WHERE Site = 'SITE-00007' GROUP BY ALL"
+      ]
+    },
+    {
+      "name": "hero_risk",
+      "displayName": "Hero charger risk",
+      "queryLines": [
+        "SELECT Site AS site_id, MEASURE(`Average Failure Probability`) AS avg_failure_probability, MEASURE(`High Risk Predictions`) AS high_risk_predictions FROM mobility_mv_charger_risk WHERE Site = 'SITE-00007' GROUP BY ALL"
+      ]
+    },
+    {
+      "name": "energy_value",
+      "displayName": "Multi-energy and convenience value",
+      "queryLines": [
+        "SELECT `Energy Type` AS energy_type, `Service Type` AS service_type, MEASURE(`Energy KWh`) AS energy_kwh, MEASURE(`Convenience Revenue EUR`) AS convenience_revenue_eur, MEASURE(`Total Revenue EUR`) AS total_revenue_eur, MEASURE(`Margin Proxy EUR`) AS margin_proxy_eur FROM mobility_mv_energy_retail_performance GROUP BY ALL"
+      ]
+    },
+    {
+      "name": "journey_value",
+      "displayName": "Customer journey value",
+      "queryLines": [
+        "SELECT `Customer Segment` AS customer_segment, MEASURE(`Completed Journeys`) AS completed_journeys, MEASURE(`Average Wait Minutes`) AS average_wait_minutes, MEASURE(`Journey Completion Rate`) AS completion_rate, MEASURE(`Journey Margin Proxy EUR`) AS margin_proxy_eur FROM mobility_mv_customer_journey_value GROUP BY ALL"
+      ]
+    },
+    {
+      "name": "charger_risk_all",
+      "displayName": "Charger risk by destination",
+      "queryLines": [
+        "SELECT Site AS site_id, Charger AS charger_id, `Risk Band` AS risk_band, `Scored Time` AS scored_time, MEASURE(`Average Failure Probability`) AS avg_failure_probability, MEASURE(`High Risk Predictions`) AS high_risk_predictions FROM mobility_mv_charger_risk GROUP BY ALL"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "control_tower",
+      "displayName": "Control Tower",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "title",
+            "multilineTextboxSpec": {
+              "lines": [
+                "ORLEN Mobility Control Tower"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "subtitle",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## **See where demand, capacity, and risk converge—then protect the customer journey and ORLEN value.**"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "hero-wait",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "hero_site",
+                  "fields": [
+                    {
+                      "name": "expected_wait_minutes",
+                      "expression": "`expected_wait_minutes`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "expected_wait_minutes",
+                  "displayName": "Expected wait (minutes)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Hero destination wait"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "hero-risk-sites",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "hero_site",
+                  "fields": [
+                    {
+                      "name": "at_risk_sites",
+                      "expression": "`at_risk_sites`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "at_risk_sites",
+                  "displayName": "At-risk destinations"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Operating risk"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "hero-high-risk-chargers",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "hero_risk",
+                  "fields": [
+                    {
+                      "name": "high_risk_predictions",
+                      "expression": "`high_risk_predictions`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "high_risk_predictions",
+                  "displayName": "Historical high-score records"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "ML signal"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "energy-revenue-by-type",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "energy_value",
+                  "fields": [
+                    {
+                      "name": "energy_type",
+                      "expression": "`energy_type`"
+                    },
+                    {
+                      "name": "sum(total_revenue_eur)",
+                      "expression": "SUM(`total_revenue_eur`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "energy_type",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Energy type"
+                },
+                "y": {
+                  "fieldName": "sum(total_revenue_eur)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Revenue (EUR)"
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue across the multi-energy destination"
+              },
+              "mark": {
+                "layout": "group",
+                "colors": [
+                  "#00A972",
+                  "#FFAB00",
+                  "#FF3621",
+                  "#2272B4",
+                  "#8B5CF6"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "journey-margin-by-segment",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "journey_value",
+                  "fields": [
+                    {
+                      "name": "customer_segment",
+                      "expression": "`customer_segment`"
+                    },
+                    {
+                      "name": "sum(margin_proxy_eur)",
+                      "expression": "SUM(`margin_proxy_eur`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "customer_segment",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Customer segment"
+                },
+                "y": {
+                  "fieldName": "sum(margin_proxy_eur)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Margin proxy (EUR)"
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Protected customer value by journey segment"
+              },
+              "mark": {
+                "layout": "group",
+                "colors": [
+                  "#00A972",
+                  "#2272B4",
+                  "#FFAB00",
+                  "#8B5CF6"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 5,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "destination-risk-table",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "site_overview",
+                  "fields": [
+                    {
+                      "name": "site_id",
+                      "expression": "`site_id`"
+                    },
+                    {
+                      "name": "operating_status",
+                      "expression": "`operating_status`"
+                    },
+                    {
+                      "name": "expected_wait_minutes",
+                      "expression": "`expected_wait_minutes`"
+                    },
+                    {
+                      "name": "available_chargers",
+                      "expression": "`available_chargers`"
+                    },
+                    {
+                      "name": "at_risk_sites",
+                      "expression": "`at_risk_sites`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "site_id",
+                    "displayName": "Destination"
+                  },
+                  {
+                    "fieldName": "operating_status",
+                    "displayName": "Status"
+                  },
+                  {
+                    "fieldName": "expected_wait_minutes",
+                    "displayName": "Expected wait (minutes)"
+                  },
+                  {
+                    "fieldName": "available_chargers",
+                    "displayName": "Available chargers"
+                  },
+                  {
+                    "fieldName": "at_risk_sites",
+                    "displayName": "At-risk sites"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Network destinations and response candidates"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ]
+    },
+    {
+      "name": "operations",
+      "displayName": "Destination Operations",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "operations-title",
+            "multilineTextboxSpec": {
+              "lines": [
+                "Destination Operations"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "operations-subtitle",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## **Use replayed operating signals and observed-degradation scores to target destination action.**"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "ops-wait",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "hero_site",
+                  "fields": [
+                    {
+                      "name": "expected_wait_minutes",
+                      "expression": "`expected_wait_minutes`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "expected_wait_minutes",
+                  "displayName": "Minutes"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Hero wait"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "ops-chargers",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "hero_site",
+                  "fields": [
+                    {
+                      "name": "available_chargers",
+                      "expression": "`available_chargers`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "available_chargers",
+                  "displayName": "Available"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Hero chargers available"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "ops-risk",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "hero_risk",
+                  "fields": [
+                    {
+                      "name": "high_risk_predictions",
+                      "expression": "`high_risk_predictions`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "high_risk_predictions",
+                  "displayName": "Score records"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Historical high-score records"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "risk-sites",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "charger_risk_all",
+                  "fields": [
+                    {
+                      "name": "site_id",
+                      "expression": "`site_id`"
+                    },
+                    {
+                      "name": "sum(high_risk_predictions)",
+                      "expression": "SUM(`high_risk_predictions`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "site_id",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "Destination"
+                },
+                "y": {
+                  "fieldName": "sum(high_risk_predictions)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "High-score records"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "ML risk by destination"
+              },
+              "mark": {
+                "layout": "group",
+                "colors": [
+                  "#FF3621"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "risk-bands",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "charger_risk_all",
+                  "fields": [
+                    {
+                      "name": "risk_band",
+                      "expression": "`risk_band`"
+                    },
+                    {
+                      "name": "sum(high_risk_predictions)",
+                      "expression": "SUM(`high_risk_predictions`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "risk_band",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Risk band"
+                },
+                "y": {
+                  "fieldName": "sum(high_risk_predictions)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Score records"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Risk distribution"
+              },
+              "mark": {
+                "layout": "group",
+                "colors": [
+                  "#00A972",
+                  "#FFAB00",
+                  "#FF3621"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 5,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "risk-detail",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "charger_risk_all",
+                  "fields": [
+                    {
+                      "name": "site_id",
+                      "expression": "`site_id`"
+                    },
+                    {
+                      "name": "charger_id",
+                      "expression": "`charger_id`"
+                    },
+                    {
+                      "name": "risk_band",
+                      "expression": "`risk_band`"
+                    },
+                    {
+                      "name": "avg_failure_probability",
+                      "expression": "`avg_failure_probability`"
+                    },
+                    {
+                      "name": "high_risk_predictions",
+                      "expression": "`high_risk_predictions`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "site_id",
+                    "displayName": "Destination"
+                  },
+                  {
+                    "fieldName": "charger_id",
+                    "displayName": "Charger"
+                  },
+                  {
+                    "fieldName": "risk_band",
+                    "displayName": "Risk band"
+                  },
+                  {
+                    "fieldName": "avg_failure_probability",
+                    "displayName": "Observed-degradation score"
+                  },
+                  {
+                    "fieldName": "high_risk_predictions",
+                    "displayName": "High-score records"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Maintenance and response candidates"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ]
+    },
+    {
+      "name": "retail",
+      "displayName": "Energy and Convenience Retail",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "retail-title",
+            "multilineTextboxSpec": {
+              "lines": [
+                "Energy and Convenience Retail"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "retail-subtitle",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## **Treat every ORLEN location as a multi-energy and convenience destination that grows revenue and customer relevance.**"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "retail-revenue",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "energy_value",
+                  "fields": [
+                    {
+                      "name": "sum(total_revenue_eur)",
+                      "expression": "SUM(`total_revenue_eur`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_revenue_eur)",
+                  "displayName": "EUR"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total retail revenue"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "retail-margin",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "energy_value",
+                  "fields": [
+                    {
+                      "name": "sum(margin_proxy_eur)",
+                      "expression": "SUM(`margin_proxy_eur`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(margin_proxy_eur)",
+                  "displayName": "EUR"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Margin proxy"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "retail-convenience",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "energy_value",
+                  "fields": [
+                    {
+                      "name": "sum(convenience_revenue_eur)",
+                      "expression": "SUM(`convenience_revenue_eur`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(convenience_revenue_eur)",
+                  "displayName": "EUR"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Convenience revenue"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "retail-revenue-by-energy",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "energy_value",
+                  "fields": [
+                    {
+                      "name": "energy_type",
+                      "expression": "`energy_type`"
+                    },
+                    {
+                      "name": "sum(total_revenue_eur)",
+                      "expression": "SUM(`total_revenue_eur`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "energy_type",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Energy type"
+                },
+                "y": {
+                  "fieldName": "sum(total_revenue_eur)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Revenue (EUR)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue by energy type"
+              },
+              "mark": {
+                "layout": "group",
+                "colors": [
+                  "#00A972",
+                  "#FFAB00",
+                  "#FF3621",
+                  "#2272B4",
+                  "#8B5CF6"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "retail-margin-by-energy",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "energy_value",
+                  "fields": [
+                    {
+                      "name": "energy_type",
+                      "expression": "`energy_type`"
+                    },
+                    {
+                      "name": "sum(margin_proxy_eur)",
+                      "expression": "SUM(`margin_proxy_eur`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "energy_type",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Energy type"
+                },
+                "y": {
+                  "fieldName": "sum(margin_proxy_eur)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Margin proxy (EUR)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Margin proxy by energy type"
+              },
+              "mark": {
+                "layout": "group",
+                "colors": [
+                  "#00A972",
+                  "#FFAB00",
+                  "#FF3621",
+                  "#2272B4",
+                  "#8B5CF6"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 5,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "retail-detail",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "energy_value",
+                  "fields": [
+                    {
+                      "name": "energy_type",
+                      "expression": "`energy_type`"
+                    },
+                    {
+                      "name": "service_type",
+                      "expression": "`service_type`"
+                    },
+                    {
+                      "name": "energy_kwh",
+                      "expression": "`energy_kwh`"
+                    },
+                    {
+                      "name": "convenience_revenue_eur",
+                      "expression": "`convenience_revenue_eur`"
+                    },
+                    {
+                      "name": "total_revenue_eur",
+                      "expression": "`total_revenue_eur`"
+                    },
+                    {
+                      "name": "margin_proxy_eur",
+                      "expression": "`margin_proxy_eur`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "energy_type",
+                    "displayName": "Energy type"
+                  },
+                  {
+                    "fieldName": "service_type",
+                    "displayName": "Service"
+                  },
+                  {
+                    "fieldName": "energy_kwh",
+                    "displayName": "Energy kWh"
+                  },
+                  {
+                    "fieldName": "convenience_revenue_eur",
+                    "displayName": "Convenience revenue"
+                  },
+                  {
+                    "fieldName": "total_revenue_eur",
+                    "displayName": "Total revenue"
+                  },
+                  {
+                    "fieldName": "margin_proxy_eur",
+                    "displayName": "Margin proxy"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Multi-energy and convenience detail"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ]
+    },
+    {
+      "name": "journeys",
+      "displayName": "Customer Journeys and Outcomes",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "journeys-title",
+            "multilineTextboxSpec": {
+              "lines": [
+                "Customer Journeys and Outcomes"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "journeys-subtitle",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## **Measure whether better destination decisions create shorter waits, completed journeys, and stronger customer value.**"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "journeys-completed",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "journey_value",
+                  "fields": [
+                    {
+                      "name": "sum(completed_journeys)",
+                      "expression": "SUM(`completed_journeys`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(completed_journeys)",
+                  "displayName": "Journeys"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Completed journeys"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "journeys-rate",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "journey_value",
+                  "fields": [
+                    {
+                      "name": "avg(completion_rate)",
+                      "expression": "AVG(`completion_rate`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(completion_rate)",
+                  "displayName": "Rate"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Journey completion rate"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "journeys-wait",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "journey_value",
+                  "fields": [
+                    {
+                      "name": "avg(average_wait_minutes)",
+                      "expression": "AVG(`average_wait_minutes`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(average_wait_minutes)",
+                  "displayName": "Minutes"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Average journey wait"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "journeys-by-segment",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "journey_value",
+                  "fields": [
+                    {
+                      "name": "customer_segment",
+                      "expression": "`customer_segment`"
+                    },
+                    {
+                      "name": "sum(completed_journeys)",
+                      "expression": "SUM(`completed_journeys`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "customer_segment",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Segment"
+                },
+                "y": {
+                  "fieldName": "sum(completed_journeys)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Completed journeys"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Completed journeys by segment"
+              },
+              "mark": {
+                "layout": "group",
+                "colors": [
+                  "#00A972",
+                  "#2272B4",
+                  "#FFAB00",
+                  "#8B5CF6"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "journeys-margin",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "journey_value",
+                  "fields": [
+                    {
+                      "name": "customer_segment",
+                      "expression": "`customer_segment`"
+                    },
+                    {
+                      "name": "sum(margin_proxy_eur)",
+                      "expression": "SUM(`margin_proxy_eur`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "customer_segment",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Segment"
+                },
+                "y": {
+                  "fieldName": "sum(margin_proxy_eur)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Margin proxy (EUR)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Customer value by segment"
+              },
+              "mark": {
+                "layout": "group",
+                "colors": [
+                  "#00A972",
+                  "#2272B4",
+                  "#FFAB00",
+                  "#8B5CF6"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 5,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "journeys-detail",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "journey_value",
+                  "fields": [
+                    {
+                      "name": "customer_segment",
+                      "expression": "`customer_segment`"
+                    },
+                    {
+                      "name": "completed_journeys",
+                      "expression": "`completed_journeys`"
+                    },
+                    {
+                      "name": "average_wait_minutes",
+                      "expression": "`average_wait_minutes`"
+                    },
+                    {
+                      "name": "completion_rate",
+                      "expression": "`completion_rate`"
+                    },
+                    {
+                      "name": "margin_proxy_eur",
+                      "expression": "`margin_proxy_eur`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "customer_segment",
+                    "displayName": "Segment"
+                  },
+                  {
+                    "fieldName": "completed_journeys",
+                    "displayName": "Completed journeys"
+                  },
+                  {
+                    "fieldName": "average_wait_minutes",
+                    "displayName": "Average wait"
+                  },
+                  {
+                    "fieldName": "completion_rate",
+                    "displayName": "Completion rate"
+                  },
+                  {
+                    "fieldName": "margin_proxy_eur",
+                    "displayName": "Margin proxy"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Journey and outcome detail"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ]
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

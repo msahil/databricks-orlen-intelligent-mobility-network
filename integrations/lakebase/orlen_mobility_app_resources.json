@@ -1,0 +1,28 @@
+{
+  "update_mask": "resources,user_api_scopes",
+  "app": {
+    "user_api_scopes": ["dashboards.genie"],
+    "resources": [
+      {
+        "name": "sql-warehouse",
+        "sql_warehouse": {"id": "3fcc040816112500", "permission": "CAN_USE"}
+      },
+      {
+        "name": "genie-space",
+        "genie_space": {
+          "name": "ORLEN Mobility Decision Intelligence",
+          "space_id": "01f1df7010f21e1da6ac146cddb7d8e6",
+          "permission": "CAN_RUN"
+        }
+      },
+      {
+        "name": "postgres",
+        "postgres": {
+          "branch": "projects/demo-hub/branches/orlen-mobility-ops",
+          "database": "projects/demo-hub/branches/orlen-mobility-ops/databases/databricks-postgres",
+          "permission": "CAN_CONNECT_AND_CREATE"
+        }
+      }
+    ]
+  }
+}

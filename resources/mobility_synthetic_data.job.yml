@@ -1,0 +1,37 @@
+resources:
+  jobs:
+    mobility_synthetic_data:
+      name: ${bundle.name}_synthetic_data
+      description: Deterministic ORLEN Mobility source data for workshop replay
+      max_concurrent_runs: 1
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: ${var.schema}
+        - name: run_id
+          default: mobility-baseline
+        - name: event_count
+          default: ${var.data_event_count}
+      environments:
+        - environment_key: serverless_python
+          spec:
+            environment_version: "4"
+            dependencies:
+              - faker
+      tasks:
+        - task_key: generate_mobility_source_data
+          environment_key: serverless_python
+          spark_python_task:
+            python_file: ../src/notebooks/generate_mobility_synthetic_data.py
+            parameters:
+              - --catalog
+              - "{{job.parameters.catalog}}"
+              - --schema
+              - "{{job.parameters.schema}}"
+              - --run-id
+              - "{{job.parameters.run_id}}"
+              - --event-count
+              - "{{job.parameters.event_count}}"
+              - --mode
+              - overwrite

@@ -1,0 +1,16 @@
+command: ['npm', 'run', 'start']
+env:
+  # The standalone Apps API deployment fallback uses these workshop parameters.
+  # The portable DAB path overrides them from deployment-time variables.
+  - name: ORLEN_CATALOG
+    value: msahil_demo_workspace_catalog
+  - name: ORLEN_SCHEMA
+    value: orlen_intelligent_mobility
+  - name: ORLEN_PROJECT_NAME
+    value: orlen-consumers-products-intelligence
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: sql-warehouse
+  - name: DATABRICKS_GENIE_SPACE_ID
+    valueFrom: genie-space
+  - name: LAKEBASE_ENDPOINT
+    valueFrom: postgres

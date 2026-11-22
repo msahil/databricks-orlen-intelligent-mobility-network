@@ -1,0 +1,81 @@
+customer: ORLEN
+customer_project_dir: projects/orlen-consumers-products-intelligence
+focus: Intelligent multi-energy and convenience-retail destinations
+workshop_key: ws_orlen_intelligent_mobility
+audience: ORLEN C-level and business heads, with retail operations, data, AI, and architecture stakeholders
+format: demo-only
+duration_minutes: null
+presentation_minutes: null
+demo_minutes: 60
+participants: null
+delivery_date: null
+
+research:
+  brief: ../../brief.md
+  research: null
+  sources: null
+
+story:
+  persona: European Retail Network Director
+  trigger: Holiday travel surge, charging congestion, abnormal charger telemetry, and rising convenience demand
+  action: Approve maintenance, customer routing, VITAY, inventory, and Stop Cafe actions
+  outcome: Reduce wait and downtime while protecting journeys, revenue, margin, and satisfaction
+
+tracks:
+  - unity-catalog
+  - lakeflow
+  - structured-streaming
+  - machine-learning
+  - mlflow
+  - ai-bi
+  - genie-ontology
+  - genie
+  - agent-bricks
+  - unity-gateway
+  - databricks-apps
+  - lakebase
+
+data:
+  policy: synthetic
+  anomaly: Charger degradation combined with a demand surge and convenience inventory risk
+  catalog: msahil_demo_workspace_catalog
+  shared_schema: orlen_intelligent_mobility
+  volume: null
+
+isolation:
+  mode: demo-only
+  principal_group: null
+  participant_prefix: null
+
+compute:
+  serverless_preferred: true
+  warehouse_id: 3fcc040816112500
+
+deployment:
+  profile: fevm-msahil-demo-workspace
+  project_name: orlen-consumers-products-intelligence
+  workspace_host: null
+  workspace_root_path: /Workspace/Users/mohammad.sahil@databricks.com
+  catalog: msahil_demo_workspace_catalog
+  schema: orlen_intelligent_mobility
+  supplied_at_deploy_time: true
+
+unity_gateway:
+  enabled: true
+  approved_assets: []
+  required_policy_proof: Approved investigation succeeds; consequential or unauthorised action is denied or requires human approval
+  fallback: Unity Catalog function permission boundary plus replayed validated agent trace
+
+lakebase:
+  enabled: true
+  project: projects/demo-hub
+  branch: projects/demo-hub/branches/orlen-mobility-ops
+  database: projects/demo-hub/branches/orlen-mobility-ops/databases/databricks-postgres
+  branch_ttl_seconds: 172800
+  operational_state: Approvals, work orders, routing instructions, campaign state, preparation tasks, and outcomes
+  return_path: CDC if supported and rehearsed; otherwise scheduled outcome sync
+
+lifecycle:
+  owner: null
+  expires_on: null
+  retain: []

@@ -1,0 +1,4 @@
+# Design-only scaffold. Add supported resources as
+# resources/<name>.<resource_type>.yml after workspace and deployment approval.
+resources: {}
+

@@ -1,0 +1,20 @@
+resources:
+  pipelines:
+    mobility_lakeflow:
+      name: ${bundle.name}_lakeflow
+      catalog: ${var.catalog}
+      target: ${var.schema}
+      root_path: ../src/pipelines/mobility_lakeflow
+      libraries:
+        - glob:
+            include: ../src/pipelines/mobility_lakeflow/transformations/**
+      serverless: true
+      photon: true
+      channel: current
+      continuous: false
+      configuration:
+        source_catalog: ${var.catalog}
+        source_schema: ${var.schema}
+      permissions:
+        - level: CAN_VIEW
+          group_name: ${var.participant_group}

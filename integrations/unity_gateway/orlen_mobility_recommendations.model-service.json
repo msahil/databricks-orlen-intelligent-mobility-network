@@ -1,0 +1,16 @@
+{
+  "comment": "ORLEN Mobility governed recommendation service for the Elmshorn workshop scenario; synthetic evidence only",
+  "config": {
+    "routing": {
+      "destinations": [
+        {
+          "name": "primary",
+          "destination_type": "DESTINATION_TYPE_PAY_PER_TOKEN_FOUNDATION_MODEL",
+          "pay_per_token_config": {
+            "model": "models/system.ai.databricks-gpt-5-4-mini"
+          }
+        }
+      ]
+    }
+  }
+}

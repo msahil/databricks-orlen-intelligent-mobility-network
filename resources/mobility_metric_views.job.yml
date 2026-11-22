@@ -1,0 +1,25 @@
+resources:
+  jobs:
+    mobility_metric_views:
+      name: ${bundle.name}_metric_views
+      description: Create governed ORLEN Mobility Metric Views for Genie and AI/BI
+      max_concurrent_runs: 1
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: ${var.schema}
+      environments:
+        - environment_key: serverless_sql
+          spec:
+            environment_version: "4"
+      tasks:
+        - task_key: create_mobility_metric_views
+          environment_key: serverless_sql
+          spark_python_task:
+            python_file: ../src/notebooks/create_mobility_metric_views.py
+            parameters:
+              - --catalog
+              - "{{job.parameters.catalog}}"
+              - --schema
+              - "{{job.parameters.schema}}"
